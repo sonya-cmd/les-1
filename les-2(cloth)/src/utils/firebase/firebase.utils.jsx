@@ -1,65 +1,75 @@
 import { initializeApp } from 'firebase/app';
 import { 
-    getAuth, 
-    signInWithRedirect, 
-    signInWithPopup, 
-    GoogleAuthProvider 
+  getAuth, 
+  signInWithRedirect, 
+  signInWithPopup, 
+  GoogleAuthProvider,
+  createUserWithEmailAndPassword as firebaseCreateUserWithEmailAndPassword
 } from 'firebase/auth';
 
 import {
-    getFirestore,
-    doc,
-    getDoc,
-    setDoc
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc
 } from 'firebase/firestore';
 
-
 const firebaseConfig = {
-    apiKey: "AIzaSyATy7bbUMDpW_dhvMKSLbn55anC5vIyOPY",
-    authDomain: "crwn-clothinh-db-87498.firebaseapp.com",
-    projectId: "crwn-clothinh-db-87498",
-    storageBucket: "crwn-clothinh-db-87498.firebasestorage.app",
-    messagingSenderId: "225917072239",
-    appId: "1:225917072239:web:b99534da1bcbf907ea6e9a"
-  };
+  apiKey: "AIzaSyATy7bbUMDpW_dhvMKSLbn55anC5vIyOPY",
+  authDomain: "crwn-clothinh-db-87498.firebaseapp.com",
+  projectId: "crwn-clothinh-db-87498",
+  storageBucket: "crwn-clothinh-db-87498.firebasestorage.app",
+  messagingSenderId: "225917072239",
+  appId: "1:225917072239:web:b99534da1bcbf907ea6e9a"
+};
 
-  const firebaseApp = initializeApp(firebaseConfig);
+// Инициализация Firebase
+const firebaseApp = initializeApp(firebaseConfig);
 
-  const provider = new GoogleAuthProvider();
+const googleProvider = new GoogleAuthProvider();
+googleProvider.setCustomParameters({
+  prompt: "select_account"
+});
 
-  provider.setCustomParameters({
-    prompt: "select_account"
-  });
+export const auth = getAuth();
+export const signInWithGooglePopup = () => 
+  signInWithPopup(auth, googleProvider);
+export const signInWithGoogleRedirect = () => 
+  signInWithRedirect(auth, googleProvider);
 
-  export const auth = getAuth();
-  export const signInWithGooglePopup = () => signInWithPopup(auth, provider);
+export const db = getFirestore();
 
-  export const db = getFirestore();
+export const createUserDocumentFromAuth = async (
+  userAuth, 
+  additionalInformaion = {}
+) => {
+  if (!userAuth) return;
 
-  const createUserDocumentFromAuth = async (userAuth) => {
-    const userDocRef = doc(db, 'users', userAuth.uid );
+  const userDocRef = doc(db, 'users', userAuth.uid);
+  const userSnapshot = await getDoc(userDocRef);
 
-    console.log(userDocRef);
+  if (!userSnapshot.exists()) {
+    const { displayName, email } = userAuth;
+    const createAt = new Date();
 
-    const userSnapshot = await getDoc(userDocRef);
-    console.log(userSnapshot);
-    console.log(userSnapshot.exists());
-    
-    if(!userSnapshot.exists()){
-        const { displayName, email } = userAuth;
-        const createAt = new Date();
-
-        try {
-            await setDoc(userDocReef, {
-                displayName,
-                email, 
-                createAt
-            });
-        }catch (error) {
-            console.log('error creating the user', error.message);
-
-        }
+    try {
+      await setDoc(userDocRef, {
+        displayName,
+        email,
+        createAt,
+        ...additionalInformaion,
+      });
+    } catch (error) {
+      console.log('error creating the user', error.message);
     }
+  }
 
-    return userDocRef;
-  };
+  return userDocRef;
+};
+
+// Экспорт под нужным именем
+export const createAuthUserWithEmailAndPassword = async (email, password) => {
+  if (!email || !password) return;
+
+  return await firebaseCreateUserWithEmailAndPassword(auth, email, password);
+};
