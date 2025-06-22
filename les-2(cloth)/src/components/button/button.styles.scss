@@ -1,20 +1,20 @@
 .button-container {
-  min-width: 165px;
-  width: auto;
-  height: 50px;
+  width: 180px;
+  height: 45px;
+  padding: 0;
+  font-size: 14px;
+  font-family: 'Comic Sans MS', 'Patrick Hand', cursive;
+  font-weight: normal;
   letter-spacing: 0.5px;
-  line-height: 50px;
-  padding: 0 35px 0 35px;
-  font-size: 15px;
-  background-color: black;
-  color: white;
   text-transform: uppercase;
-  font-family: 'Open Sans Condensed';
-  font-weight: bolder;
+  color: white;
+  background-color: black;
   border: none;
   cursor: pointer;
   display: flex;
+  align-items: center;
   justify-content: center;
+  transition: all 0.3s ease;
 
   &:hover {
     background-color: white;
@@ -24,11 +24,9 @@
 
   &.google-sign-in {
     background-color: #4285f4;
-    color: white;
 
     &:hover {
       background-color: #357ae8;
-      border: none;
     }
   }
 
@@ -40,7 +38,6 @@
     &:hover {
       background-color: black;
       color: white;
-      border: none;
     }
   }
 }
