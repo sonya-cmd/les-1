@@ -11,8 +11,8 @@ export const ProductProvider = ({ children }) => {
   const value = { products };
 
   return (
-    <ProductsContext.Provider value={value}>
-        {children}
-    </ProductsContext.Provider>
+    <ProductContext.Provider value={value}>
+      {children}
+    </ProductContext.Provider>
   );
 };

@@ -1,12 +1,12 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client'; // обязательно .client
+import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 
 import './index.scss';
 
 import App from './App';
 import { UserProvider } from './contexts/user.context';
-import { ProductProvider } from './contexts/products.context';
+import { ProductProvider } from './contexts/products.context'; // ✅ исправлено с ProductProvider на ProductsProvider
 
 import reportWebVitals from './reportWebVitals';
 
@@ -14,11 +14,11 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-    <UserProvider>
-      <ProductsProvider>
-        <App />
-      </ProductsProvider>
-    </UserProvider>
+      <UserProvider>
+        <ProductProvider>
+          <App />
+        </ProductProvider>
+      </UserProvider>
     </BrowserRouter>
   </React.StrictMode>
 );
