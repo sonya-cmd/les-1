@@ -11,8 +11,26 @@
     height: 95%;
     object-fit: cover;
     margin-bottom: 5px;
-    transition: opacity 0.3s ease; // Добавим плавность
+    transition: opacity 0.3s ease; 
   }
+
+.product-footer {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 8px;
+  font-size: 16px;
+  z-index: 2;
+  position: relative; // ⬅️ поверх кнопки
+}
+
+.name {
+  margin-bottom: 5px;
+}
+
+.price {
+  margin-left: auto;
+}
 
   button {
     width: 80%;

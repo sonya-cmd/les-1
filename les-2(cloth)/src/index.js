@@ -7,6 +7,7 @@ import './index.scss';
 import App from './App';
 import { UserProvider } from './contexts/user.context';
 import { ProductProvider } from './contexts/products.context'; // ✅ исправлено с ProductProvider на ProductsProvider
+import { CartProvider } from './contexts/cart.context';
 
 import reportWebVitals from './reportWebVitals';
 
@@ -16,7 +17,9 @@ root.render(
     <BrowserRouter>
       <UserProvider>
         <ProductProvider>
-          <App />
+          <CartProvider>
+            <App />
+          </CartProvider>
         </ProductProvider>
       </UserProvider>
     </BrowserRouter>
