@@ -18,18 +18,21 @@
   width: 100%;
   display: flex;
   justify-content: space-between;
+  align-items: center;
   padding: 0 8px;
   font-size: 16px;
-  z-index: 2;
-  position: relative; // ⬅️ поверх кнопки
+  white-space: nowrap;     // 💡 не переносить текст
+  gap: 8px;
 }
 
 .name {
-  margin-bottom: 5px;
+  margin-bottom: 0;
+  white-space: nowrap;
 }
 
 .price {
   margin-left: auto;
+  white-space: nowrap;
 }
 
   button {
