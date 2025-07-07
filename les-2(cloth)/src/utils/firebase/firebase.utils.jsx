@@ -5,7 +5,7 @@ import {
   signInWithPopup, 
   GoogleAuthProvider,
   createUserWithEmailAndPassword as firebaseCreateUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
+  signInWithEmailAndPassword as firebaseSignInWithEmailAndPassword, // ✅ ИСПРАВЛЕНО
   signOut,
   onAuthStateChanged
 } from 'firebase/auth';
@@ -30,23 +30,27 @@ const firebaseConfig = {
   appId: "1:225917072239:web:b99534da1bcbf907ea6e9a"
 };
 
-// Инициализация Firebase
+// ✅ Инициализация Firebase
 const firebaseApp = initializeApp(firebaseConfig);
 
+// ✅ Настройка Google провайдера
 const googleProvider = new GoogleAuthProvider();
 googleProvider.setCustomParameters({
   prompt: "select_account"
 });
 
 export const auth = getAuth();
+
 export const signInWithGooglePopup = () => 
   signInWithPopup(auth, googleProvider);
+
 export const signInWithGoogleRedirect = () => 
   signInWithRedirect(auth, googleProvider);
 
+// ✅ Firestore
 export const db = getFirestore();
 
-export const addCollectionAndDocuments = async (collectionKey, objectsToAdd, field) => {
+export const addCollectionAndDocuments = async (collectionKey, objectsToAdd) => {
   const collectionRef = collection(db, collectionKey);
   const batch = writeBatch(db);
 
@@ -73,27 +77,26 @@ export const getCategoriesAndDocuments = async () => {
   return categoryMap;
 }
 
-
+// ✅ Создание документа пользователя
 export const createUserDocumentFromAuth = async (
   userAuth, 
-  additionalInformaion = {}
+  additionalInformation = {}
 ) => {
   if (!userAuth) return;
 
   const userDocRef = doc(db, 'users', userAuth.uid);
-  
   const userSnapshot = await getDoc(userDocRef);
 
   if (!userSnapshot.exists()) {
     const { displayName, email } = userAuth;
-    const createAt = new Date();
+    const createdAt = new Date();
 
     try {
       await setDoc(userDocRef, {
         displayName,
         email,
-        createAt,
-        ...additionalInformaion,
+        createdAt,
+        ...additionalInformation,
       });
     } catch (error) {
       console.log('error creating the user', error.message);
@@ -103,20 +106,23 @@ export const createUserDocumentFromAuth = async (
   return userDocRef;
 };
 
-// Экспорт под нужным именем
+// ✅ Создание пользователя по email/паролю
 export const createAuthUserWithEmailAndPassword = async (email, password) => {
   if (!email || !password) return;
 
   return await firebaseCreateUserWithEmailAndPassword(auth, email, password);
 };
 
+// ✅ Вход пользователя по email/паролю (ИСПРАВЛЕНО)
 export const signInAuthUserWithEmailAndPassword = async (email, password) => {
   if (!email || !password) return;
 
-  return await signInAuthUserWithEmailAndPassword(auth, email, password);
+  return await firebaseSignInWithEmailAndPassword(auth, email, password);
 };
 
+// ✅ Выход пользователя
 export const signOutUser = async () => await signOut(auth);
 
+// ✅ Подписка на изменение состояния пользователя
 export const onAuthStateChangedListener = (callback) => 
   onAuthStateChanged(auth, callback);
