@@ -35,7 +35,7 @@ const removeCartItem = (cartItems, cartItemToRemove) => {
     );
 };
 
-const clearCartItem = (cartItems, cartItemToClear) => cartItems.filter(cartItem => cartItem.id !== cartItemToClear.id);
+
 
 
 export const CartContext = createContext({
@@ -48,6 +48,9 @@ export const CartContext = createContext({
   cartCount: 0,
   cartTotal: 0,
 });
+
+const clearCartItem = (cartItems, cartItemToClear) => 
+  cartItems.filter(cartItem => cartItem.id !== cartItemToClear.id);
 
 const CART_ACTION_TYPES = {
   SET_CART_ITEMS: 'SET_CART_ITEMS',
