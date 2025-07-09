@@ -28,9 +28,9 @@ const removeCartItem = (cartItems, cartItemToRemove) => {
   }
 
   return cartItems.map((item) =>
-    item.id === cartItemToRemove.id
-      ? { ...item, quantity: item.quantity - 1 }
-      : item
+    cartItem.id === cartItemToRemove.id
+      ? { ...cartItem, quantity: cartItem.quantity - 1 }
+      : cartItem
   );
 };
 
@@ -41,22 +41,18 @@ const clearCartItem = (cartItems, cartItemToClear) =>
 export const setIsCartOpen = (boolean) =>
   createAction(CART_ACTION_TYPES.SET_IS_CART_OPEN, boolean);
 
-// ✅ Экшн для обновления массива cartItems
-export const setCartItems = (cartItems) =>
-  createAction(CART_ACTION_TYPES.SET_CART_ITEMS, cartItems);
 
 // ✅ Основные логики изменения корзины
 export const addItemToCart = (cartItems, productToAdd) => {
   const newCartItems = addCartItem(cartItems, productToAdd);
-  return setCartItems(newCartItems);
+  return createAction(CART_ACTION_TYPES.SET_CART_ITEMS, newCartItems);
 };
-
 export const removeItemFromCart = (cartItems, cartItemToRemove) => {
   const newCartItems = removeCartItem(cartItems, cartItemToRemove);
-  return setCartItems(newCartItems);
+  return createAction(CART_ACTION_TYPES.SET_CART_ITEMS, newCartItems);
 };
 
-export const clearItemFromCart = (cartItems, cartItemToClear) => {
+  export const clearItemFromCart = (cartItems, cartItemToClear) => {
   const newCartItems = clearCartItem(cartItems, cartItemToClear);
-  return setCartItems(newCartItems);
+ return createAction(CART_ACTION_TYPES.SET_CART_ITEMS, newCartItems);
 };

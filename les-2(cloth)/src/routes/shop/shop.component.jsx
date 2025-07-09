@@ -6,7 +6,7 @@ import CategoriesPreview from '../categories-preview/categories-preview.componen
 import Category from '../category/category.component';
 
 import { getCategoriesAndDocuments } from '../../utils/firebase/firebase.utils';
-import { setCategoriesMap } from '../../store/categoriess/category.action';
+import { setCategoriesMap } from '../../store/categoriess/category.action'; // ✅ Путь должен быть корректным
 
 import './shop.styles.scss';
 
@@ -15,8 +15,8 @@ const Shop = () => {
 
   useEffect(() => {
     const getCategoriesMap = async () => {
-      const categoriesArray = await getCategoriesAndDocuments();
-      dispatch(setCategoriesMap(categoriesArray));
+      const categoriesMap = await getCategoriesAndDocuments('categories');
+      dispatch(setCategoriesMap(categoriesMap)); // ✅ исправлено
     };
 
     getCategoriesMap();
