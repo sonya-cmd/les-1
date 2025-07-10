@@ -5,8 +5,7 @@ import { useDispatch } from 'react-redux';
 import CategoriesPreview from '../categories-preview/categories-preview.component';
 import Category from '../category/category.component';
 
-import { getCategoriesAndDocuments } from '../../utils/firebase/firebase.utils';
-import { setCategoriesMap } from '../../store/categoriess/category.action'; // ✅ Путь должен быть корректным
+import { fetchCategoriesAsync } from '../../store/categoriess/category.action'; // ✅
 
 import './shop.styles.scss';
 
@@ -14,12 +13,7 @@ const Shop = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const getCategoriesMap = async () => {
-      const categoriesMap = await getCategoriesAndDocuments('categories');
-      dispatch(setCategoriesMap(categoriesMap)); // ✅ исправлено
-    };
-
-    getCategoriesMap();
+    dispatch(fetchCategoriesAsync()); // ✅ Асинхронная загрузка
   }, [dispatch]);
 
   return (

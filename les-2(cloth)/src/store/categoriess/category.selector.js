@@ -1,20 +1,13 @@
-import { createSelector } from 'reselect';
+import { createSelector } from 'reselect'; // ✅ ДОБАВИЛИ
 
 const selectCategoryReducer = (state) => state.categories;
 
-export const selectCategories = createSelector(
+export const selectCategoriesMap = createSelector(
   [selectCategoryReducer],
-  (categoriesSlice) => categoriesSlice.categories
+  (categoriesSlice) => categoriesSlice.categoriesMap
 );
 
-export const selectCategoriesMap = createSelector(
-  [selectCategories],
-  (categories) =>
-    Array.isArray(categories) // ✅ Проверка безопасности
-      ? categories.reduce((acc, category) => {
-          const { title, items } = category;
-          acc[title.toLowerCase()] = items;
-          return acc;
-        }, {})
-      : {} // Возвращаем пустой объект, если что-то пошло не так
-)
+export const selectIsCategoriesLoading = createSelector(
+  [selectCategoryReducer],
+  (categoriesSlice) => categoriesSlice.isLoading
+);
