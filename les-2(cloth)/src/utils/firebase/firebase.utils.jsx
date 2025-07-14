@@ -1,11 +1,11 @@
 import { initializeApp } from 'firebase/app';
-import { 
-  getAuth, 
-  signInWithRedirect, 
-  signInWithPopup, 
+import {
+  getAuth,
+  signInWithRedirect,
+  signInWithPopup,
   GoogleAuthProvider,
   createUserWithEmailAndPassword as firebaseCreateUserWithEmailAndPassword,
-  signInWithEmailAndPassword as firebaseSignInWithEmailAndPassword, // ✅ ИСПРАВЛЕНО
+  signInWithEmailAndPassword as firebaseSignInWithEmailAndPassword,
   signOut,
   onAuthStateChanged
 } from 'firebase/auth';
@@ -18,15 +18,15 @@ import {
   collection,
   writeBatch,
   query,
-  getDocs,
-  DocumentSnapshot
+  getDocs
 } from 'firebase/firestore';
 
+// ✅ Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyATy7bbUMDpW_dhvMKSLbn55anC5vIyOPY",
   authDomain: "crwn-clothinh-db-87498.firebaseapp.com",
   projectId: "crwn-clothinh-db-87498",
-  storageBucket: "crwn-clothinh-db-87498.firebasestorage.app",
+  storageBucket: "crwn-clothinh-db-87498.appspot.com", // ⬅️ исправлено
   messagingSenderId: "225917072239",
   appId: "1:225917072239:web:b99534da1bcbf907ea6e9a"
 };
@@ -34,7 +34,7 @@ const firebaseConfig = {
 // ✅ Инициализация Firebase
 const firebaseApp = initializeApp(firebaseConfig);
 
-// ✅ Настройка Google провайдера
+// ✅ Настройка Google-провайдера
 const googleProvider = new GoogleAuthProvider();
 googleProvider.setCustomParameters({
   prompt: "select_account"
@@ -42,15 +42,13 @@ googleProvider.setCustomParameters({
 
 export const auth = getAuth();
 
-export const signInWithGooglePopup = () => 
-  signInWithPopup(auth, googleProvider);
-
-export const signInWithGoogleRedirect = () => 
-  signInWithRedirect(auth, googleProvider);
+export const signInWithGooglePopup = () => signInWithPopup(auth, googleProvider);
+export const signInWithGoogleRedirect = () => signInWithRedirect(auth, googleProvider);
 
 // ✅ Firestore
 export const db = getFirestore();
 
+// 🔁 Импорт данных в коллекцию
 export const addCollectionAndDocuments = async (collectionKey, objectsToAdd) => {
   const collectionRef = collection(db, collectionKey);
   const batch = writeBatch(db);
@@ -64,10 +62,10 @@ export const addCollectionAndDocuments = async (collectionKey, objectsToAdd) => 
   console.log('done');
 };
 
+// 📦 Получение категорий из Firestore
 export const getCategoriesAndDocuments = async () => {
   const collectionRef = collection(db, 'categories');
   const q = query(collectionRef);
-
   const querySnapshot = await getDocs(q);
 
   const categoryMap = {};
@@ -79,16 +77,14 @@ export const getCategoriesAndDocuments = async () => {
   return categoryMap;
 };
 
-// ✅ Создание документа пользователя
-export const createUserDocumentFromAuth = async (
-  userAuth, 
-  additionalInformation = {}
-) => {
+// ✅ Создание/чтение документа пользователя
+export const createUserDocumentFromAuth = async (userAuth, additionalInformation = {}) => {
   if (!userAuth) return;
 
   const userDocRef = doc(db, 'users', userAuth.uid);
-  const userSnapshot = await getDoc(userDocRef);
+  let userSnapshot = await getDoc(userDocRef);
 
+  // Если пользователь не существует — создаём
   if (!userSnapshot.exists()) {
     const { displayName, email } = userAuth;
     const createdAt = new Date();
@@ -101,36 +97,39 @@ export const createUserDocumentFromAuth = async (
         ...additionalInformation,
       });
     } catch (error) {
-      console.log('error creating the user', error.message);
+      console.log('Error creating the user:', error.message);
     }
+
+    // После создания — снова читаем
+    userSnapshot = await getDoc(userDocRef);
   }
 
-  return userSnapshot;
+  return userSnapshot; // ✅ Всегда возвращает snapshot
 };
 
-// ✅ Создание пользователя по email/паролю
+// ✅ Регистрация по email/паролю
 export const createAuthUserWithEmailAndPassword = async (email, password) => {
   if (!email || !password) return;
 
   return await firebaseCreateUserWithEmailAndPassword(auth, email, password);
 };
 
-// ✅ Вход пользователя по email/паролю (ИСПРАВЛЕНО)
+// ✅ Вход по email/паролю
 export const signInAuthUserWithEmailAndPassword = async (email, password) => {
   if (!email || !password) return;
 
   return await firebaseSignInWithEmailAndPassword(auth, email, password);
 };
 
-// ✅ Выход пользователя
+// ✅ Выход
 export const signOutUser = async () => await signOut(auth);
 
-// ✅ Подписка на изменение состояния пользователя
-export const onAuthStateChangedListener = (callback) => 
-  onAuthStateChanged(auth, callback);
+// ✅ Слушатель авторизации
+export const onAuthStateChangedListener = (callback) => onAuthStateChanged(auth, callback);
 
+// ✅ Получение текущего пользователя
 export const getCurrentUser = () => {
-  return new Promise ((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     const unsubscribe = onAuthStateChanged(
       auth,
       (userAuth) => {
