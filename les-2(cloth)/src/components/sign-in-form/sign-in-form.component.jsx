@@ -5,8 +5,14 @@ import FormInput from '../form-input/form-input.component';
 import Button from '../button/button.component';
 import { BUTTON_TYPE_CLASSES } from '../button/button.types';
 
+import {
+  signInAuthUserWithEmailAndPassword,
+  signInWithGooglePopup,
+} from '../../utils/firebase/firebase.utils';
+
+import { setCurrentUser } from '../../store/user/user.reducer';
+
 import './sign-in-form.styles.scss';
-import { googleSignInStart, emailSignInStart } from '../../store/user/user.action';
 
 const defaultFormFields = {
   email: '',
@@ -22,14 +28,24 @@ const SignInForm = () => {
     setFormFields(defaultFormFields);
   };
 
-  const signInWithGoogle = () => {
-    dispatch(googleSignInStart());
+  const signInWithGoogle = async () => {
+    try {
+      const { user } = await signInWithGooglePopup();
+      dispatch(setCurrentUser(user));
+    } catch (error) {
+      console.log('Google sign-in error', error);
+    }
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    dispatch(emailSignInStart(email, password));
-    resetFormFields(); // можно вызывать сразу, либо дождаться успеха через useEffect
+    try {
+      const { user } = await signInAuthUserWithEmailAndPassword(email, password);
+      dispatch(setCurrentUser(user));
+      resetFormFields();
+    } catch (error) {
+      console.log('Email/password sign-in error', error);
+    }
   };
 
   const handleChange = (event) => {

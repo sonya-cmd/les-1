@@ -1,22 +1,34 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-
 import { Routes, Route } from 'react-router-dom';
-
 
 import Home from './routes/home/home.component';
 import Navigation from './routes/home/navigation/navigation.component';
 import Authentication from './routes/home/authentication/authentication.component';
 import Shop from './routes/shop/shop.component';
 import Checkout from './routes/checkout/checkout.component';
-import { checkUserSession } from './store/user/user.action';
+
+import { onAuthStateChangedListener, createUserDocumentFromAuth } from './utils/firebase/firebase.utils';
+import { setCurrentUser } from './store/user/user.reducer';
 
 const App = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(checkUserSession());
-  },[]);
+    const unsubscribe = onAuthStateChangedListener(async (user) => {
+      if (user) {
+        await createUserDocumentFromAuth(user);
+
+        // Берём только сериализуемые поля
+        const { accessToken, email, displayName, uid } = user;
+        dispatch(setCurrentUser({ accessToken, email, displayName, uid }));
+      } else {
+        dispatch(setCurrentUser(null));
+      }
+    });
+
+    return unsubscribe;
+  }, [dispatch]);
 
   return ( 
     <Routes>

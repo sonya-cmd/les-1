@@ -1,22 +1,22 @@
-import { CATEGORIES_ACTION_TYPES } from './category.types';
+import { createSlice } from '@reduxjs/toolkit';
 
 export const CATEGORIES_INITIAL_STATE = {
-  categoriesMap: {}, // ✅ теперь это объект, не массив
+  categories: {}, // используем объект (map), не массив
   isLoading: false,
-  error: null,
 };
 
-export const categoriesReducer = (state = CATEGORIES_INITIAL_STATE, action = {}) => {
-  const { type, payload } = action;
+const categoriesSlice = createSlice({
+  name: 'categories',
+  initialState: CATEGORIES_INITIAL_STATE,
+  reducers: {
+    setCategories(state, action) {
+      state.categories = action.payload;
+    },
+    setIsLoading(state, action) {
+      state.isLoading = action.payload;
+    },
+  },
+});
 
-  switch (type) {
-    case CATEGORIES_ACTION_TYPES.FETCH_CATEGORIES_START:
-      return { ...state, isLoading: true };
-    case CATEGORIES_ACTION_TYPES.FETCH_CATEGORIES_SUCCESS:
-      return { ...state, categoriesMap: payload, isLoading: false };
-    case CATEGORIES_ACTION_TYPES.FETCH_CATEGORIES_FAILED:
-      return { ...state, error: payload, isLoading: false };
-    default:
-      return state;
-  }
-};
+export const { setCategories, setIsLoading } = categoriesSlice.actions;
+export const categoriesReducer = categoriesSlice.reducer;

@@ -10,16 +10,25 @@ import { ReactComponent as CrwnLogo } from '../../../assets/crown.svg';
 import { selectIsCartOpen } from '../../../store/cart/cart.selector';
 import { selectCurrentUser } from '../../../store/user/user.selector';
 
-import { signOutStart } from '../../../store/user/user.action';
+import { signOutUser } from '../../../utils/firebase/firebase.utils'; // 👈 Импортируем Firebase-функцию
+import { setCurrentUser } from '../../../store/user/user.reducer';
 
-import { NavigationContainer, NavLinks, NavLink, LogoContainer } from './navigation.styles';
+import {
+  NavigationContainer,
+  NavLinks,
+  NavLink,
+  LogoContainer,
+} from './navigation.styles';
 
 const Navigation = () => {
   const dispatch = useDispatch();
   const currentUser = useSelector(selectCurrentUser);
   const isCartOpen = useSelector(selectIsCartOpen);
 
-  const signOutUser = () => dispatch(signOutStart()); // правильная функция выхода
+  const handleSignOut = async () => {
+    await signOutUser(); // 👈 вызываем Firebase logout
+    dispatch(setCurrentUser(null)); // 👈 сбрасываем пользователя в Redux
+  };
 
   return (
     <Fragment>
@@ -30,13 +39,13 @@ const Navigation = () => {
 
         <NavLinks>
           <NavLink to='/shop'>SHOP</NavLink>
-          {
-            currentUser ? (
-              <NavLink as='span' onClick={signOutUser}>SIGN OUT</NavLink>
-            ) : (
-              <NavLink to='/auth'>SIGN IN</NavLink>
-            )
-          }
+          {currentUser ? (
+            <NavLink as='span' onClick={handleSignOut}>
+              SIGN OUT
+            </NavLink>
+          ) : (
+            <NavLink to='/auth'>SIGN IN</NavLink>
+          )}
           <CartIcon />
         </NavLinks>
         {isCartOpen && <CartDropdown />}
