@@ -1,6 +1,8 @@
 import { createSelector } from 'reselect';
+import { CartState } from './cart.reducer';
 
-const selectCartReducer = (state) => state.cart;
+// Здесь предполагаем, что в state есть поле cart с типом CartState
+const selectCartReducer = (state: { cart: CartState }): CartState => state.cart;
 
 export const selectCartItems = createSelector(
   [selectCartReducer],
@@ -15,7 +17,10 @@ export const selectIsCartOpen = createSelector(
 export const selectCartCount = createSelector(
   [selectCartItems],
   (cartItems) =>
-    cartItems.reduce((total, cartItem) => total + cartItem.quantity, 0)
+    cartItems.reduce(
+      (total, cartItem) => total + cartItem.quantity,
+      0
+    )
 );
 
 export const selectCartTotal = createSelector(
