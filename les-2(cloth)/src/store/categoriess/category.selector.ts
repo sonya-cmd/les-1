@@ -1,5 +1,6 @@
 import { createSelector } from 'reselect';
 
+import { RootState } from '../store';
 import { CategoriesState } from './category.reducer';
 import { CategoryMap } from './category.types';
 
@@ -9,7 +10,7 @@ type State = {
 };
 
 // Базовый селектор
-const selectCategoryReducer = (state: State): CategoriesState => state.categories;
+const selectCategoryReducer = (state: RootState): CategoriesState => state.categories;
 
 // 👉 Массив категорий
 export const selectCategories = createSelector(

@@ -1,43 +1,72 @@
-import { configureStore } from '@reduxjs/toolkit';
-import createSagaMiddleware from 'redux-saga';
-import logger from 'redux-logger';
-import { persistStore, persistReducer } from 'redux-persist';
+import { persistStore, persistReducer, PersistConfig } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
+import createSagaMiddleware from 'redux-saga';
+import logger from 'redux-logger'; // ✅ Импорт логгера напрямую
+import {
+  applyMiddleware,
+  compose,
+  createStore,
+  Store,
+  Middleware,
+} from 'redux';
 
+import { rootSaga } from './root-saga';
 import { rootReducer } from './root-reducer';
-import rootSaga from './root-saga';
 
-// Настройки для persist
-const persistConfig = {
-  key: 'root',
-  storage,
-  whitelist: ['cart', 'user'], // сохраняемые редюсеры
-};
+// Типизация состояния
+export type RootState = ReturnType<typeof rootReducer>;
 
-// Обертывание редюсера в persistReducer
-const persistedReducer = persistReducer(persistConfig, rootReducer);
-
-// Создание middleware
-const sagaMiddleware = createSagaMiddleware();
-
-const middlewares = [sagaMiddleware];
-
-if (process.env.NODE_ENV !== 'production') {
-  middlewares.push(logger);
+// Типизация window для Redux DevTools
+declare global {
+  interface Window {
+    __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: typeof compose;
+  }
 }
 
-// Создание стора
-export const store = configureStore({
-  reducer: persistedReducer,
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      thunk: false,
-      serializableCheck: false, // для persist
-    }).concat(middlewares),
-});
+// Тип для persist config с ограничением ключей состояния
+type ExtendedPersistConfig = PersistConfig<RootState> & {
+  whitelist: (keyof RootState)[];
+};
 
-// Запуск саг
-sagaMiddleware.run(rootSaga);
+// Настройки persist
+const persistConfig: ExtendedPersistConfig = {
+  key: 'root',
+  storage,
+  whitelist: ['cart'], // только cart сохраняется
+};
 
-// Создание persistor для обертки <PersistGate />
+// Обернутый редюсер
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+// Saga middleware
+const sagaMiddleware = createSagaMiddleware();
+
+// ✅ Массив middleware: logger только в dev, фильтрация null и строгая типизация
+const middlewares = [
+  process.env.NODE_ENV !== 'production' ? logger : null,
+  sagaMiddleware,
+].filter((middleware): middleware is Middleware => Boolean(middleware));
+
+// ✅ Поддержка Redux DevTools с проверкой window
+const composeEnhancer =
+  process.env.NODE_ENV !== 'production' &&
+  typeof window !== 'undefined' &&
+  window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+    ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+    : compose;
+
+// ✅ Сборка middleware
+const composedEnhancers = composeEnhancer(applyMiddleware(...middlewares));
+
+// ✅ Создание Redux store
+export const store: Store = createStore(
+  persistedReducer,
+  undefined,
+  composedEnhancers
+);
+
+// ✅ Создание persistor
 export const persistor = persistStore(store);
+
+// ✅ Запуск корневой саги
+sagaMiddleware.run(rootSaga);

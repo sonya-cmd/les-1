@@ -14,6 +14,7 @@
     "@types/node": "^24.0.15",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
+    "@types/redux-logger": "^3.0.13",
     "dotenv": "^17.2.0",
     "firebase": "^11.9.1",
     "react": "^18.3.1",
@@ -31,6 +32,7 @@
     "sass-loader": "13",
     "stripe": "^18.3.0",
     "styled-components": "^6.1.19",
+    "typed-redux-saga": "^1.5.0",
     "typescript": "^5.8.3",
     "web-vitals": "^2.1.4"
   },

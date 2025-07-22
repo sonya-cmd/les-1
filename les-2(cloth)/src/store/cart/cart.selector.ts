@@ -1,4 +1,7 @@
 import { createSelector } from 'reselect';
+
+import { RootState } from '../store';
+
 import { CartState } from './cart.reducer';
 
 // Здесь предполагаем, что в state есть поле cart с типом CartState
