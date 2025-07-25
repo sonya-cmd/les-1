@@ -1,4 +1,6 @@
-import { takeLatest, put, all, call } from "redux-saga/effects";
+import { takeLatest, put, all, call } from "typed-redux-saga/macro";
+
+import { User } from "firebase/auth";
 
 import { USER_ACTION_TYPES } from "./user.types";
 import {
@@ -17,12 +19,13 @@ import {
   signInAuthUserWithEmailAndPassword,
   createAuthUserWithEmailAndPassword,
   signOutUser,
+  AdditionalInformation
 } from "../../utils/firebase/firebase.utils";
 
 // 📌 Получение snapshot'а пользователя
-export function* getSnapshotFromUserAuth(userAuth, additionalDetails) {
+export function* getSnapshotFromUserAuth(userAuth: User, additionalDetails: AdditionalInformation) {
   try {
-    const userSnapshot = yield call(createUserDocumentFromAuth, userAuth, additionalDetails);
+    const userSnapshot = yield* call(createUserDocumentFromAuth, userAuth, additionalDetails);
     yield put(signInSuccess({ id: userSnapshot.id, ...userSnapshot.data() }));
   } catch (error) {
     yield put(signInFailed(error));
