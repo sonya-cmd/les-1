@@ -3,13 +3,18 @@ import styled, { css } from 'styled-components';
 const subColor = 'grey';
 const mainColor = 'black';
 
-const shrinkLabelStyles = css` 
+const shrinkLabelStyles = css`
   top: -14px;
   font-size: 12px;
-  color: ${mainColor}; // ✅ Исправлено с $main-color на переменную
+  color: ${mainColor};
 `;
 
-export const FormInputLabel = styled.label`
+// ✅ ВАЖНО: типизируем проп $shrink
+type FormInputLabelProps = {
+  $shrink?: boolean;
+};
+
+export const FormInputLabel = styled.label<FormInputLabelProps>`
   color: ${subColor};
   font-size: 16px;
   position: absolute;
@@ -18,7 +23,7 @@ export const FormInputLabel = styled.label`
   transition: 300ms ease all;
   pointer-events: none;
 
-  ${({ $shrink }) => $shrink && shrinkLabelStyles}; // ✅ Используем $shrink
+  ${({ $shrink }) => $shrink && shrinkLabelStyles};
 `;
 
 export const Input = styled.input`

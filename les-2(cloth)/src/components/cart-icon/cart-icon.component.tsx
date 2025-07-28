@@ -3,7 +3,9 @@ import { useDispatch, useSelector } from 'react-redux';  // <-- добавили
 import { selectCartCount, selectIsCartOpen } from '../../store/cart/cart.selector';
 import { setIsCartOpen } from '../../store/cart/cart.action';
 
-import { ShoppingIcon, CartIconContainer, ItemCount } from './cart-icon.styles.jsx';
+import { CartIconContainer, ItemCount } from './cart-icon.styles';
+
+import { ReactComponent as ShoppingIcon } from '../../assets/shopping-bag.svg'; // ✅ новое имя
 
 const CartIcon = () => {
   const dispatch = useDispatch();
@@ -14,7 +16,7 @@ const CartIcon = () => {
 
   return (
     <CartIconContainer onClick={toggleIsCartOpen}>
-      <ShoppingIcon />
+      <ShoppingIcon /> 
       <ItemCount>{cartCount}</ItemCount>
     </CartIconContainer>
   );

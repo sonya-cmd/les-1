@@ -1,24 +1,13 @@
 import { AnyAction } from 'redux';
-
-import { USER_ACTION_TYPES } from './user.types';
-import {
-  signInFailed,
-  signUpFailed,
-  signOutFailed,
-  signOutSuccess,
-  signInSuccess,
-} from './user.action';
-
+import { signInSuccess, signOutSuccess, signInFailed, signUpFailed, signOutFailed } from './user.action';
 import { UserData } from '../../utils/firebase/firebase.utils';
 
-// ✅ Тип состояния пользователя
 export type UserState = {
   readonly currentUser: UserData | null;
   readonly isLoading: boolean;
   readonly error: Error | null;
 };
 
-// ✅ Начальное состояние
 const INITIAL_STATE: UserState = {
   currentUser: null,
   isLoading: false,

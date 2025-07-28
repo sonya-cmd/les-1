@@ -10,13 +10,14 @@ import { ReactComponent as CrwnLogo } from '../../../assets/crown.svg';
 import { selectIsCartOpen } from '../../../store/cart/cart.selector';
 import { selectCurrentUser } from '../../../store/user/user.selector';
 
-import { signOutUser } from '../../../utils/firebase/firebase.utils'; // 👈 Импортируем Firebase-функцию
+import { signOutUser } from '../../../utils/firebase/firebase.utils';
 import { setCurrentUser } from '../../../store/user/user.action';
 
 import {
   NavigationContainer,
   NavLinks,
   NavLink,
+  NavSpan, // ✅ Импортируем NavSpan
   LogoContainer,
 } from './navigation.styles';
 
@@ -26,8 +27,8 @@ const Navigation = () => {
   const isCartOpen = useSelector(selectIsCartOpen);
 
   const handleSignOut = async () => {
-    await signOutUser(); // 👈 вызываем Firebase logout
-    dispatch(setCurrentUser(null)); // 👈 сбрасываем пользователя в Redux
+    await signOutUser();
+    dispatch(setCurrentUser(null));
   };
 
   return (
@@ -40,9 +41,7 @@ const Navigation = () => {
         <NavLinks>
           <NavLink to='/shop'>SHOP</NavLink>
           {currentUser ? (
-            <NavLink as='span' onClick={handleSignOut}>
-              SIGN OUT
-            </NavLink>
+            <NavSpan onClick={handleSignOut}>SIGN OUT</NavSpan> // ✅ Здесь замена
           ) : (
             <NavLink to='/auth'>SIGN IN</NavLink>
           )}

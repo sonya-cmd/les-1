@@ -1,4 +1,4 @@
-import { User } from 'firebase/auth'; // ✅ Добавлен импорт User из Firebase
+import { User } from 'firebase/auth';
 import { USER_ACTION_TYPES } from './user.types';
 import {
   createAction,
@@ -6,12 +6,13 @@ import {
   Action,
   ActionWithPayload,
 } from '../../utils/reducer/reducer.utils';
+
 import {
   UserData,
   AdditionalInformation,
 } from '../../utils/firebase/firebase.utils';
 
-// ✅ Типы для экшенов
+// Типы экшенов
 export type CheckUserSession = Action<USER_ACTION_TYPES.CHECK_USER_SESSION>;
 
 export type SetCurrentUser = ActionWithPayload<
@@ -41,7 +42,6 @@ export type SignUpStart = ActionWithPayload<
   { email: string; password: string; displayName: string }
 >;
 
-// ✅ Исправлено: user теперь типа Firebase.User
 export type SignUpSuccess = ActionWithPayload<
   USER_ACTION_TYPES.SIGN_UP_SUCCESS,
   { user: User; additionalDetails: AdditionalInformation }
@@ -61,7 +61,7 @@ export type SignOutFailed = ActionWithPayload<
   Error
 >;
 
-// ✅ Экшены
+// Экшены
 export const checkUserSession = withMatcher(
   (): CheckUserSession =>
     createAction(USER_ACTION_TYPES.CHECK_USER_SESSION)
@@ -83,7 +83,7 @@ export const emailSignInStart = withMatcher(
 );
 
 export const signInSuccess = withMatcher(
-  (user: UserData & { id: string }): SignInSuccess =>
+  (user: UserData): SignInSuccess =>
     createAction(USER_ACTION_TYPES.SIGN_IN_SUCCESS, user)
 );
 
@@ -92,16 +92,12 @@ export const signInFailed = withMatcher(
     createAction(USER_ACTION_TYPES.SIGN_IN_FAILED, error)
 );
 
+// ✅ ОБНОВЛЁННЫЙ signUpStart — теперь принимает один объект!
 export const signUpStart = withMatcher(
-  (email: string, password: string, displayName: string): SignUpStart =>
-    createAction(USER_ACTION_TYPES.SIGN_UP_START, {
-      email,
-      password,
-      displayName,
-    })
+  (payload: { email: string; password: string; displayName: string }): SignUpStart =>
+    createAction(USER_ACTION_TYPES.SIGN_UP_START, payload)
 );
 
-// ✅ Исправлено: теперь user: User
 export const signUpSuccess = withMatcher(
   (
     user: User,

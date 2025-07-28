@@ -26,6 +26,9 @@ import {
   UserData,
 } from "../../utils/firebase/firebase.utils";
 
+// 👤 Тип с id
+type UserDataWithId = UserData & { id: string };
+
 // 📌 Получение snapshot'а пользователя
 export function* getSnapshotFromUserAuth(
   userAuth: User,
@@ -40,14 +43,15 @@ export function* getSnapshotFromUserAuth(
 
     if (!userSnapshot || !userSnapshot.exists()) return;
 
-    const userData = userSnapshot.data() as UserData;
+    const userData = userSnapshot.data();
+    if (!userData) return;
 
-    yield* put(
-      signInSuccess({
-        id: userSnapshot.id,
-        ...userData,
-      })
-    );
+    const userWithId: UserDataWithId = {
+      id: userSnapshot.id,
+      ...userData,
+    };
+
+    yield* put(signInSuccess(userWithId));
   } catch (error) {
     yield* put(signInFailed(error as Error));
   }

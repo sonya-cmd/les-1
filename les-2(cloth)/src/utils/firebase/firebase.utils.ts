@@ -21,13 +21,11 @@ import {
   writeBatch,
   query,
   getDocs,
-  DocumentSnapshot,
-  QueryDocumentSnapshot
+  DocumentSnapshot
 } from 'firebase/firestore';
 
 import { Category } from '../../store/categories/category.types';
 
-// ✅ Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyATy7bbUMDpW_dhvMKSLbn55anC5vIyOPY",
   authDomain: "crwn-clothinh-db-87498.firebaseapp.com",
@@ -37,10 +35,8 @@ const firebaseConfig = {
   appId: "1:225917072239:web:b99534da1bcbf907ea6e9a"
 };
 
-// ✅ Инициализация Firebase
 const firebaseApp = initializeApp(firebaseConfig);
 
-// ✅ Настройка Google-провайдера
 const googleProvider = new GoogleAuthProvider();
 googleProvider.setCustomParameters({ prompt: "select_account" });
 
@@ -48,10 +44,8 @@ export const auth = getAuth();
 export const signInWithGooglePopup = () => signInWithPopup(auth, googleProvider);
 export const signInWithGoogleRedirect = () => signInWithRedirect(auth, googleProvider);
 
-// ✅ Firestore
 export const db = getFirestore();
 
-// ✅ Типы
 export type AdditionalInformation = {
   displayName?: string;
 };
@@ -66,7 +60,6 @@ export type ObjectToAdd = {
   title: string;
 };
 
-// 🔁 Импорт данных в коллекцию
 export const addCollectionAndDocuments = async <T extends ObjectToAdd>(
   collectionKey: string,
   objectsToAdd: T[]
@@ -83,7 +76,6 @@ export const addCollectionAndDocuments = async <T extends ObjectToAdd>(
   console.log('done');
 };
 
-// 📦 Получение категорий из Firestore как массив
 export const getCategoriesAndDocuments = async (): Promise<Category[]> => {
   const collectionRef = collection(db, 'categories');
   const q = query(collectionRef);
@@ -94,7 +86,6 @@ export const getCategoriesAndDocuments = async (): Promise<Category[]> => {
   );
 };
 
-// ✅ Создание/чтение документа пользователя
 export const createUserDocumentFromAuth = async (
   userAuth: User,
   additionalInformation: AdditionalInformation = {}
@@ -125,7 +116,6 @@ export const createUserDocumentFromAuth = async (
   return userSnapshot as DocumentSnapshot<UserData>;
 };
 
-// ✅ Регистрация по email/паролю
 export const createAuthUserWithEmailAndPassword = async (
   email: string,
   password: string
@@ -134,7 +124,6 @@ export const createAuthUserWithEmailAndPassword = async (
   return await firebaseCreateUserWithEmailAndPassword(auth, email, password);
 };
 
-// ✅ Вход по email/паролю
 export const signInAuthUserWithEmailAndPassword = async (
   email: string,
   password: string
@@ -143,14 +132,11 @@ export const signInAuthUserWithEmailAndPassword = async (
   return await firebaseSignInWithEmailAndPassword(auth, email, password);
 };
 
-// ✅ Выход
 export const signOutUser = async () => await signOut(auth);
 
-// ✅ Слушатель авторизации
 export const onAuthStateChangedListener = (callback: NextOrObserver<User>) =>
   onAuthStateChanged(auth, callback);
 
-// ✅ Получение текущего пользователя
 export const getCurrentUser = (): Promise<User | null> => {
   return new Promise((resolve, reject) => {
     const unsubscribe = onAuthStateChanged(
