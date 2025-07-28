@@ -8,8 +8,12 @@ import Authentication from './routes/home/authentication/authentication.componen
 import Shop from './routes/shop/shop.component';
 import Checkout from './routes/checkout/checkout.component';
 
-import { onAuthStateChangedListener, createUserDocumentFromAuth } from './utils/firebase/firebase.utils';
-import { setCurrentUser } from './store/user/user.reducer';
+import {
+  onAuthStateChangedListener,
+  createUserDocumentFromAuth
+} from './utils/firebase/firebase.utils';
+
+import { setCurrentUser } from './store/user/user.action'; // ✅ исправлено
 
 const App = () => {
   const dispatch = useDispatch();
@@ -19,7 +23,6 @@ const App = () => {
       if (user) {
         await createUserDocumentFromAuth(user);
 
-        // Берём только сериализуемые поля
         const { accessToken, email, displayName, uid } = user;
         dispatch(setCurrentUser({ accessToken, email, displayName, uid }));
       } else {

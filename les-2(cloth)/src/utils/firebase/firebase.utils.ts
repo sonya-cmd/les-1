@@ -25,7 +25,7 @@ import {
   QueryDocumentSnapshot
 } from 'firebase/firestore';
 
-import { Category } from '../../store/categoriess/category.types';
+import { Category } from '../../store/categories/category.types';
 
 // ✅ Firebase config
 const firebaseConfig = {
@@ -83,26 +83,22 @@ export const addCollectionAndDocuments = async <T extends ObjectToAdd>(
   console.log('done');
 };
 
-// 📦 Получение категорий из Firestore
-export const getCategoriesAndDocuments = async (): Promise<Record<string, any[]>> => {
+// 📦 Получение категорий из Firestore как массив
+export const getCategoriesAndDocuments = async (): Promise<Category[]> => {
   const collectionRef = collection(db, 'categories');
   const q = query(collectionRef);
   const querySnapshot = await getDocs(q);
 
-  const categoryMap: Record<string, any[]> = {};
-  querySnapshot.forEach((docSnapshot) => {
-    const { title, items } = docSnapshot.data();
-    categoryMap[title.toLowerCase()] = items;
-  });
-
-  return categoryMap;
+  return querySnapshot.docs.map(
+    (docSnapshot) => docSnapshot.data() as Category
+  );
 };
 
 // ✅ Создание/чтение документа пользователя
 export const createUserDocumentFromAuth = async (
   userAuth: User,
   additionalInformation: AdditionalInformation = {}
-): Promise<DocumentSnapshot | void> => {
+): Promise<DocumentSnapshot<UserData> | void> => {
   if (!userAuth) return;
 
   const userDocRef = doc(db, 'users', userAuth.uid);
@@ -126,7 +122,7 @@ export const createUserDocumentFromAuth = async (
     userSnapshot = await getDoc(userDocRef);
   }
 
-  return userSnapshot as QueryDocumentSnapshot<UserData>; 
+  return userSnapshot as DocumentSnapshot<UserData>;
 };
 
 // ✅ Регистрация по email/паролю

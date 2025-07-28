@@ -10,7 +10,7 @@ import {
   signInWithGooglePopup,
 } from '../../utils/firebase/firebase.utils';
 
-import { setCurrentUser } from '../../store/user/user.reducer';
+import { setCurrentUser } from '../../store/user/user.action';
 
 import './sign-in-form.styles.scss';
 

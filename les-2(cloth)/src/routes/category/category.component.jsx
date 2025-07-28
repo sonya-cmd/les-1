@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 
 import ProductCard from "../../components/product-card/product-card.component";
 import Spinner from "../../components/spinner/spinner.component";
-import { selectCategoriesMap, selectIsCategoriesLoading } from "../../store/categoriess/category.selector"; // ✅ исправлено
+import { selectCategoriesMap, selectIsCategoriesLoading } from "../../store/categories/category.selector"; // ✅ исправлено
 
 import './category.styles.scss';
 

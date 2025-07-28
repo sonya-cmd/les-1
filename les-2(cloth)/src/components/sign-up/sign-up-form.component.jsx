@@ -9,7 +9,7 @@ import {
   createUserDocumentFromAuth,
 } from '../../utils/firebase/firebase.utils';
 
-import { setCurrentUser } from '../../store/user/user.reducer';
+import { setCurrentUser } from '../../store/user/user.action';
 
 import './sign-up-form.styles.scss';
 

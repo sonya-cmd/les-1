@@ -1,9 +1,13 @@
-import { Middleware, AnyAction } from "redux";
+import { Middleware } from "redux";
 import { RootState } from "../store";
 
+function isActionWithType(action: unknown): action is { type: string; payload?: unknown } {
+  return typeof action === "object" && action !== null && "type" in action;
+}
+
 export const loggerMiddleware: Middleware<{}, RootState> =
-  (store) => (next) => (action: AnyAction) => {
-    if (!action.type) {
+  (store) => (next) => (action) => {
+    if (!isActionWithType(action)) {
       return next(action);
     }
 
