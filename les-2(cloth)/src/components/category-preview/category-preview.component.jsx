@@ -1,28 +1,29 @@
-import { Link } from 'react-router-dom';
-
-import ProductCard from '../product-card/product-card.component';
-
 import './category-preview.styles.scss';
 
-const CategoryPreview = ({ title, products }) => {
+import { useContext, Fragment } from 'react';
+
+import { CategoriesContext } from '../../contexts/categories.context';
+import CategoryPreview from '../../components/category-preview/category-preview.component';
+import Spinner from '../spinner/spinner.component';
+
+const CategoriesPreview = () => {
+  const { categoriesMap, loading } = useContext(CategoriesContext);
+
   return (
-    <div className='category-preview-container'>
-      <h2>
-        <Link className='title' to={title}>
-          {title.toUpperCase()}
-        </Link>
-      </h2>
-      <div className='preview'>
-        {
-          products
-            .filter((_, idx) => idx < 4)
-            .map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))
-        }
-      </div>
-    </div>
+    <Fragment>
+  {loading ? (
+    <Spinner />
+  ) : (
+    Object.keys(categoriesMap).map((title) => {
+      const products = categoriesMap[title];
+      return (
+        <CategoryPreview key={title} title={title} products={products} />
+      );
+    })
+  )}
+</Fragment>
+
   );
 };
 
-export default CategoryPreview;
+export default CategoriesPreview;

@@ -4,7 +4,10 @@ import { useSelector } from "react-redux";
 
 import ProductCard from "../../components/product-card/product-card.component";
 import Spinner from "../../components/spinner/spinner.component";
-import { selectCategoriesMap, selectIsCategoriesLoading } from "../../store/categories/category.selector";
+import {
+  selectCategoriesMap,
+  selectIsCategoriesLoading,
+} from "../../store/categories/category.selector";
 
 import './category.styles.scss';
 
@@ -26,14 +29,14 @@ const Category = () => {
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
-    if (category) {
-      setProducts(categoriesMap[category] || []);
+    if (category && categoriesMap[category]) {
+      setProducts(categoriesMap[category]);
     }
   }, [category, categoriesMap]);
 
   return (
     <Fragment>
-      <h2 className="category-title">{category?.toUpperCase() || "CATEGORY"}</h2>
+      <h2 className="category-title">{category?.toUpperCase()}</h2>
       {isLoading ? (
         <Spinner />
       ) : (
