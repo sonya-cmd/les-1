@@ -9,7 +9,7 @@ import {
   selectIsCategoriesLoading,
 } from "../../store/categories/category.selector";
 
-import './category.styles.scss';
+import { CategoryContainer, CategoryTitle } from './category.styles'; // ← вот импорт
 
 type CategoryRouteParams = {
   category: string;
